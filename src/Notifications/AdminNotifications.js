@@ -14,7 +14,7 @@ const AdminNotifications = () => {
             let response;
             if (activeTab === "other") {
                 response = await axios.get("/notification/otherAdminNoti", { withCredentials: true });
-            } else if (activeTab === "addPet",) {
+            } else if (activeTab === "addPet") {
                 response = await axios.get("/notification/showAdminAdoptNoti", { withCredentials: true });
             } else if (activeTab === "requestRegister") {
                 response = await axios.get("/notification/showRegisNoti", { withCredentials: true });
