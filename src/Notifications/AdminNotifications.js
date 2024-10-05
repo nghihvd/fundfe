@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from "../services/axios";
 import "../styles/adminpage.scss";
 const AdminNotifications = () => {
@@ -13,11 +13,11 @@ const AdminNotifications = () => {
         try {
             let response;
             if (activeTab === "other") {
-                response = await axios.get("/notification/otherAdminNoti");
-            } else if (activeTab === "addPet") {
-                response = await axios.get("/notification/showAdminAdoptNoti");
+                response = await axios.get("/notification/otherAdminNoti", { withCredentials: true });
+            } else if (activeTab === "addPet",) {
+                response = await axios.get("/notification/showAdminAdoptNoti", { withCredentials: true });
             } else if (activeTab === "requestRegister") {
-                response = await axios.get("/notification/showRegisNoti");
+                response = await axios.get("/notification/showRegisNoti", { withCredentials: true });
             }
             setNotifications(response.data.data || []);
         } catch (error) {
