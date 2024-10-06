@@ -22,8 +22,9 @@ const AdminNotifications = () => {
                 response = await axios.get("/notification/showRegisNoti", { withCredentials: true });
             }
             
+            console.log('API Response:', response);
+
             if (response.status === 200) {
-                // Kiểm tra cấu trúc dữ liệu trả về
                 const data = response.data.data || response.data;
                 setNotifications(Array.isArray(data) ? data : []);
             } else {
@@ -35,14 +36,8 @@ const AdminNotifications = () => {
             if (error.response) {
                 switch (error.response.status) {
                     case 400:
-                        setError(error.response.data || 'No notifications found');
-                        break;
-                    case 401:
-                        setError('Unauthorized. Please log in again.');
-                        // Có thể thêm logic chuyển hướng đến trang đăng nhập ở đây
-                        break;
                     case 404:
-                        setError('No notifications found');
+                        setError(error.response.data || 'No notifications found');
                         break;
                     default:
                         setError('An error occurred. Please try again later.');
@@ -64,9 +59,15 @@ const AdminNotifications = () => {
 
     const HandleStatusUpdate = async (notiID, status) => {
         try {
+            console.log(`Updating notification ${notiID} with status ${status}`);
             const response = await axios.put(`notification/${notiID}/status?status=${status}`);
+            console.log('Update response:', response);
             if (response.status === 200) {
-                toast.success(`Notification ${status ? 'Accepted' : 'Denied'} successfully`);
+                if (response.data === "Delete pet and notification") {
+                    toast.success("Pet and notification deleted successfully");
+                } else {
+                    toast.success(`Notification ${status ? 'Accepted' : 'Denied'} successfully`);
+                }
                 apiAdminNotifications();
             }
         } catch (error) {
@@ -109,12 +110,12 @@ const AdminNotifications = () => {
                 ) : notifications.length > 0 ? (
                     <ul className="notification-list">
                         {notifications.map((noti) => (
-                            <li key={noti.id} className="notification-item">
+                            <li key={noti.notiID} className="notification-item">
                                 <p>{noti.message}</p>
-                                {(activeTab === 'addPet' || activeTab === 'requestRegister') && (
+                                {(activeTab === 'addPet' || activeTab === 'requestRegister') && noti.button_status && (
                                     <div className="notification-actions">
-                                        <button onClick={() => HandleStatusUpdate(noti.id, true)}>Accept</button>
-                                        <button onClick={() => HandleStatusUpdate(noti.id, false)}>Deny</button>
+                                        <button onClick={() => HandleStatusUpdate(noti.notiID, true)}>Accept</button>
+                                        <button onClick={() => HandleStatusUpdate(noti.notiID, false)}>Deny</button>
                                     </div>
                                 )}
                             </li>

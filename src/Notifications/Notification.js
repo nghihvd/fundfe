@@ -16,13 +16,13 @@ const Notification = ({ roleID }) => {
             } else if (roleID === "3") {
                 response = await axios.get("notification/memberNoti");
             }
-            console.log("API response:", response); // Log để kiểm tra response
+            console.log("API response:", response);
 
-            // Kiểm tra cấu trúc dữ liệu và set notifications
-            if (response.data && response.data.data) {
-                setNotifications(response.data.data);
+            if (response && response.data) {
+                const notificationData = response.data.data || response.data;
+                setNotifications(Array.isArray(notificationData) ? notificationData : []);
             } else {
-                console.error("Unexpected response structure:", response);
+               
                 setNotifications([]);
             }
         } catch (error) {
