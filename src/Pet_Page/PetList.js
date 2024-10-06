@@ -1,11 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios, { BASE_URL } from "../services/axios";
-import { useEffect } from "react";
 import "../styles/petslist.scss";
-import { useCallback } from "react";
 import { FaFilter } from "react-icons/fa";
-import AddPet from "./AddPet";
 
 const PetsList = () => {
   const [pets, setPets] = useState([]);
@@ -23,11 +20,6 @@ const PetsList = () => {
   const roleID = localStorage.getItem("roleID");
 
   useEffect(() => {
-    if (roleID !== "3") {
-      // Nếu roleID không phải là 3, hiển thị thông báo Access Denied
-      return <div>Access Denied</div>;
-    }
-    // Gọi API để lấy danh sách pets
     apiListPets();
   }, [roleID]);
 
@@ -43,16 +35,6 @@ const PetsList = () => {
     }
   };
 
-  // Gọi hàm apiListPets khi component được mount
-  useEffect(() => {
-    apiListPets();
-  }, []);
-
-  const handlePetAdded = () => {
-    apiListPets(); // Gọi lại API để cập nhật danh sách pet
-  };
-
-  // Hàm xử lý khi người dùng nhập thông tin tìm kiếm
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
@@ -102,16 +84,15 @@ const PetsList = () => {
     }
   };
 
-  // Hàm xử lý khi người dùng click vào một pet
   const handlePetClick = (pet) => {
     if (pet.petID) {
       console.log("Navigating to pet detail with ID:", pet.petID);
       navigate(`/petdetail/${pet.petID}`, { state: { pet } });
     } else {
-      console.error("Pet ID is undefi ned");
+      console.error("Pet ID is undefined");
     }
   };
-  // Hàm lấy đường dẫn ảnh từ API
+
   const getImageUrl = useCallback((imgUrl) => {
     if (!imgUrl) return "/path/to/default/image.jpg";
     if (imgUrl.startsWith("images\\"))
@@ -123,6 +104,11 @@ const PetsList = () => {
   const indexOfFirstPet = indexOfLastPet - petsPerPage;
   const currentPets = pets.slice(indexOfFirstPet, indexOfLastPet);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Callback function to refresh pets list
+  const refreshPetsList = () => {
+    apiListPets();
+  };
 
   return (
     <div className="pets-list-container">
@@ -185,7 +171,6 @@ const PetsList = () => {
           </div>
         </form>
       </div>
-      <AddPet onPetAdded={handlePetAdded} />
       <div className="pets-grid">
         {currentPets.length > 0 ? (
           currentPets.map((pet) => (

@@ -2,9 +2,10 @@
   position: relative;
   cursor: pointer;
   padding: 5px;
-  margin-right: 20px;  // Thêm margin bên phải
-    margin-left: 20px;   // Thêm margin bên trái
-    margin-top: 10px;
+
+  margin-right: 20px; // Thêm margin bên phải
+  margin-left: 20px; // Thêm margin bên trái
+  margin-top: 10px;
 
   .fa-bell {
     font-size: 1.5rem; // Tăng kích thước icon
@@ -42,7 +43,7 @@
       border-bottom: 1px solid #e0e0e0;
       font-size: 16px; // Tăng kích thước chữ
       line-height: 1.4;
-      
+
       &:last-child {
         border-bottom: none;
       }
@@ -54,7 +55,8 @@
   }
 }
 
-.staff-notifications, .member-notifications {
+.staff-notifications,
+.member-notifications {
   max-width: 900px; // Tăng chiều rộng tối đa
   margin: 0 auto;
   padding: 30px;
@@ -72,12 +74,13 @@
 
     .notification-item {
       background-color: #fff;
+
       border-radius: 10px;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
       margin-bottom: 20px;
       padding: 20px;
       transition: box-shadow 0.3s ease, transform 0.3s ease;
-    
+
       &:hover {
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         transform: translateY(-2px);

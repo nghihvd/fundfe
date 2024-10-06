@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "../services/axios";
 import "../styles/addpet.scss";
 
-const AddPet = ({ onPetAdded }) => {
+const AddPet = ({ onPetAdded = () => {} }) => {
   const navigate = useNavigate();
 
   const [petData, setPetData] = useState({
@@ -13,17 +13,17 @@ const AddPet = ({ onPetAdded }) => {
     sex: "",
     age: "",
     weight: "",
-    note: "", // Thêm trường note
-    size: "", // Thêm trường size
+    note: "",
+    size: "",
     potty_trained: false,
-    dietary_requirements: false, // Thêm trường dietary_requirements
+    dietary_requirements: false,
     spayed: false,
     vaccinated: false,
     socialized: false,
     rabies_vaccinated: false,
-    origin: "", // Thêm trường origin
+    origin: "",
     img_url: null,
-    categoryID: null,
+    categoryID: 1,
     description: "",
   });
 
@@ -81,6 +81,14 @@ const AddPet = ({ onPetAdded }) => {
       );
       alert("Failed to add pet. Please try again.");
     }
+  };
+
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    setPetData((prev) => ({
+      ...prev,
+      categoryID: value ? parseInt(value, 10) : 0, // Chuyển đổi categoryID thành int
+    }));
   };
 
   return (
@@ -147,6 +155,7 @@ const AddPet = ({ onPetAdded }) => {
             />
             <input
               type="number"
+              step="0.1"
               placeholder="Pet Weight"
               className="form-control"
               name="weight"
@@ -176,11 +185,13 @@ const AddPet = ({ onPetAdded }) => {
             </select>
             <select
               className="form-select"
+              placeholder="Category"
               name="categoryID"
               value={petData.categoryID}
-              onChange={handleChange}
+              onChange={handleCategoryChange}
               required
             >
+              <option value="">Category</option>
               <option value="1">Dog</option>
               <option value="2">Cat</option>
             </select>
@@ -198,7 +209,6 @@ const AddPet = ({ onPetAdded }) => {
               name="description"
               value={petData.description}
               onChange={handleChange}
-              required
             />
             {/*Checkbox */}
             <div className="col-md-3">
