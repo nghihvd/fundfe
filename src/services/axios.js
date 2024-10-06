@@ -4,11 +4,25 @@ export const BASE_URL = 'http://localhost:8081/';
 // Create an axios instance with your custom configuration
 const instance = axios.create({
   baseURL: BASE_URL,
-
+  withCredentials: true, // Điều này sẽ gửi cookie với mỗi request
+  
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+// Thêm interceptor để xử lý lỗi 401 (Unauthorized)
+instance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Xóa thông tin đăng nhập và chuyển hướng đến trang đăng nhập
+      localStorage.clear();
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Create an API object to handle HTTP methods
 const api = {
@@ -25,4 +39,4 @@ const api = {
   }),
 };
 
-export default api; 
+export default api;

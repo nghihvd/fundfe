@@ -48,6 +48,7 @@ const Login = () => {
       toast.error("Invalid username or password");
     }
   };
+
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
     const roleID = localStorage.getItem("roleID");
