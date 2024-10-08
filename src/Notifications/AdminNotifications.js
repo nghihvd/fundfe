@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from "../services/axios";
 import "../styles/adminpage.scss";
 import { toast } from 'react-toastify';
