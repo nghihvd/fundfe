@@ -7,6 +7,7 @@ const StaffNotifications = () => {
     const apiStaffNotifications = useCallback(async () => {
         try {
             const response = await axios.get("notification/showStaffNoti");
+            console.log("Full API response:", response.data);
             setNotifications(response.data.data || []);
         } catch (error) {
             console.error("Error fetching notifications:", error);

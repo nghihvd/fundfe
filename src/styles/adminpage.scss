@@ -4,7 +4,7 @@
 
   .sidebar-notifications {
     width: 250px;
-    background-color: #f1f1f1;
+    background-color: #ffffff;
     padding: 20px;
     border-right: 1px solid #b6b8b9; /* Viền phải */
     h2 {
@@ -28,6 +28,19 @@
         margin-bottom: 10px;
         text-align: center;
         transition: background-color 0.3s ease;
+        position: relative;
+
+        .notification-count {
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          background-color: red;
+          color: white;
+          border-radius: 50%;
+          padding: 2px 6px;
+          font-size: 12px;
+          font-weight: bold;
+        }
 
         &:hover {
           background-color: #ebb945;
@@ -46,9 +59,9 @@
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background-color: #f0f0f0;
+    background-color: #ffffff;
     h2 {
-      font-size: 24px;
+      font-size: 16px;
       color: #333;
       margin-bottom: 20px;
     }
@@ -104,6 +117,11 @@
               }
             }
           }
+        }
+
+        &.new {
+          border-left: 4px solid #1890ff;
+          background-color: #e6f7ff;
         }
       }
     }

@@ -1,5 +1,7 @@
+
 const Donate = () => {
-  const accountID = localStorage.getItem("accountID"); //anna
+  const accountID = sessionStorage.getItem('accountID');//anna
+
   const evenID = localStorage.getItem("evenID");
   let content = ``;
   if (accountID != null && evenID != null) {
@@ -7,6 +9,10 @@ const Donate = () => {
     localStorage.removeItem("evenID");
   } else if (accountID != null && evenID == null) {
     content = `Account ${accountID} donate for FurryFriendFund`;
+  }else if(accountID==null&&evenID!=null){
+    content = `Donate for event ${evenID}`;
+  }else{
+    content = `Donate for FurryFriendFund`;
   }
   const imageURL = `https://api.vietqr.io/image/970416-28029307-wjc5eta.jpg?accountName=TRUONG%20PHUC%20LOC&amount=0&addInfo=${content}`;
   console.log(imageURL);
