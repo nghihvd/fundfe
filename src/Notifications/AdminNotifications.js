@@ -15,11 +15,11 @@ const AdminNotifications = () => {
         try {
             let response;
             if (activeTab === "other") {
-                response = await axios.get("/notification/otherAdminNoti", { withCredentials: true });
+                response = await axios.get("/notification/otherAdminNoti");
             } else if (activeTab === "addPet") {
-                response = await axios.get("/notification/showAdminAdoptNoti", { withCredentials: true });
+                response = await axios.get("/notification/showAdminAdoptNoti");
             } else if (activeTab === "requestRegister") {
-                response = await axios.get("/notification/showRegisNoti", { withCredentials: true });
+                response = await axios.get("/notification/showRegisNoti");
             }
             
             console.log('API Response:', response);
