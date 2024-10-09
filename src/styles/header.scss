@@ -1,6 +1,7 @@
 /*Header*/
 .header {
-  background-color: rgb(246, 239, 230) !important;
+  background: #f4f4f4;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.07);
   width: 100vw;
   padding: 0 15px;
   margin-left: calc(-50vw + 50%);
@@ -28,11 +29,21 @@
 .me-auto {
   margin: 0 auto;
   margin-top: 8px;
-  margin-left: 200px;
+  margin-left: 150px;
+
   h3 {
-    font-size: 18px;
+    font-size: 20px;
+    position: relative; // Để có thể sử dụng z-index
+    z-index: 1; // Đảm bảo văn bản nằm trên hình ảnh
+    transition: color 0.3s; // Hiệu ứng chuyển màu
   }
+
   .nav-link {
+    position: relative; // Để có thể sử dụng z-index
+    z-index: 1; // Đảm bảo văn bản nằm trên hình ảnh
+    // display: inline-block; // Để có thể áp dụng padding và background
+    margin: 10px 20px;
+
     &:active {
       background-color: rgb(149, 144, 141);
     }
@@ -64,8 +75,8 @@
 }
 
 .notification-wrapper {
-  margin-right: 20px;  // Điều chỉnh giá trị này để tăng hoặc giảm khoảng cách
-  margin-left: 20px;   // Thêm margin bên trái nếu cần
+  margin-right: 20px; // Điều chỉnh giá trị này để tăng hoặc giảm khoảng cách
+  margin-left: 20px; // Thêm margin bên trái nếu cần
 }
 
 .notification-indicator {
@@ -114,7 +125,7 @@
 
 .custom-dropdown .dropdown-toggle {
   font-weight: 500;
-  font-size: 15px;
+  font-size: 16px;
   color: rgb(85, 83, 81);
   .nav-link {
     &:active {
@@ -122,9 +133,3 @@
     }
   }
 }
-
-
-
-
-
-

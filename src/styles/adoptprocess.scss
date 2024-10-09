@@ -1,13 +1,13 @@
-.adoption-process-container {
+.container .adoption-process-container {
   margin: 50px auto;
   padding: 20px;
-  background-color: #f9f9f9; // Màu nền của container
+  background-color: #ffffff;
   // border-radius: 8px;
   // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 800px; // Độ rộng tối đa của container
+  max-width: 100%; // Độ rộng tối đa của container
 }
 .modal {
-  z-index: 1050; // Đảm bảo modal nằm trên các thành phần khác
+  z-index: 1050;
 }
 
 .modal-backdrop {
@@ -18,7 +18,6 @@
 
   h1.adoption-title {
     font-size: 2.5rem;
-    text-align: center;
     color: #343a40;
     margin-bottom: 30px;
     font-weight: bold;
@@ -47,10 +46,11 @@
       margin: 15px 0;
       color: #495057;
       display: flex;
-      align-items: center;
+      // align-items: center;
 
-      span {
-        font-size: 1.5rem; // Kích thước icon
+      i {
+        margin-top: 9px;
+        font-size: 1.2rem; // Kích thước icon
         margin-right: 10px; // Khoảng cách giữa icon và chữ
       }
     }
@@ -75,10 +75,11 @@
 
   .confirm-button {
     display: block;
-    width: 100%;
+    width: 80%;
+    align-items: center;
     padding: 15px;
     font-size: 1.2rem;
-    background-color: #f1cf7e;
+    background-color: #ec5338;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -86,7 +87,7 @@
     text-align: center;
 
     &:hover {
-      background-color: #f1ba3a;
+      background-color: #a42b0ad5;
     }
   }
 }

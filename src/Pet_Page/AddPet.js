@@ -23,7 +23,7 @@ const AddPet = ({ onPetAdded = () => {} }) => {
     rabies_vaccinated: false,
     origin: "",
     img_url: null,
-    categoryID: 1,
+    categoryID: null,
     description: "",
   });
 
@@ -87,7 +87,7 @@ const AddPet = ({ onPetAdded = () => {} }) => {
     const value = e.target.value;
     setPetData((prev) => ({
       ...prev,
-      categoryID: value ? parseInt(value, 10) : 0, // Chuyển đổi categoryID thành int
+      categoryID: value ? parseInt(value, 10) : 0,
     }));
   };
 

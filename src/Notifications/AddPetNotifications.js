@@ -23,9 +23,13 @@ const AddPetNotifications = () => {
             setNewNotificationsCount(newCount);
             setNotifications(processedNotifications);
         } catch (error) {
-            console.error('Error fetching notifications:', error);
-            setError('An error occurred. Please try again later.');
-            setNotifications([]);
+            if (error.response && error.response.status === 404) {  
+                console.log('No add pet notifications found');
+                setNotifications([]);
+            } else {
+                console.error('Error fetching notifications:', error)
+                setError('An error occurred. Please try again later.');
+            }
         } finally {
             setIsLoading(false);
         }

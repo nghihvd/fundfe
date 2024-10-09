@@ -1,11 +1,11 @@
 .footer {
-  background-color: rgb(246, 239, 230);
-  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.471);
   text-align: center;
   color: #333;
   font-family: Arial, sans-serif;
   margin-top: auto; // Ensures the footer is at the bottom
 }
+
 .social-icons {
   display: flex;
   justify-content: center;
@@ -13,7 +13,7 @@
   a {
     color: #333;
     margin: 10px;
-    font-size: 24px;
+    font-size: 20px;
   }
   &:focus {
     outline: none;
@@ -28,17 +28,23 @@
 }
 
 .footer-info {
+  margin-top: 15px;
   text-align: left;
 }
 .small-divider {
   border-top: 2px solid #000000;
 }
 .footer-bottom {
-  font-size: 16px;
+  margin-top: 15px;
+  font-size: 12px;
   color: #333333;
+  p {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #333333;
+  }
 }
 
-.footer-bottom p {
-  font-size: 14px;
-  color: #333333;
+.footer-about {
+  margin-top: 15px;
 }

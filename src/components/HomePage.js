@@ -195,20 +195,22 @@ const HomePage = () => {
         <button className="read-more">READ MORE</button>
       </section>
 
-      <div className="support-banner">
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col">
-              <h2 className="support-text">Have you already supported us?</h2>
-            </div>
-            <div className="col-auto">
-              <NavLink to="/donate" className="nav-link">
-                <button className="support-button">DONATE NOW</button>
-              </NavLink>
+      <section class="container-fluid support-banner-bg bg-fixed overlay">
+        <div className="support-banner">
+          <div className="container">
+            <div className="row align-items-center">
+              <div className="col">
+                <h2 className="support-text">Have you already supported us?</h2>
+              </div>
+              <div className="col-auto">
+                <NavLink to="/donate" className="nav-link">
+                  <button className="support-button">DONATE NOW</button>
+                </NavLink>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

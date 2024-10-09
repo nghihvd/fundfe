@@ -251,20 +251,32 @@
 }
 
 /*Banner ủng hộ*/
-.support-banner {
-  background-image: url("../assets/images/banner.webp");
-  background-size: cover;
+.support-banner-bg {
+  background-image: url(https://www.hanoipetadoption.com/Images/ready-to-support.jpg);
   background-position: center;
-  border-radius: 5px;
-  // padding: 20px 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+
   h2 {
     font-size: 30px;
     margin-top: 20px;
     color: white;
   }
 }
+
+.overlay {
+  box-shadow: inset 0 0 0 1000px rgba(41, 41, 41, 0.42);
+}
+
+.container-fluid {
+  padding: 15px 15px;
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .support-button {
-  background-color: #f1cf7e;
+  background-color: #f51a13;
   color: white;
   border: none;
   padding: 10px 25px;
@@ -276,8 +288,9 @@
 }
 
 .support-button:hover {
-  background-color: #f1ba3a;
   transform: translateY(-2px);
+  background-color: #ea463a;
+
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

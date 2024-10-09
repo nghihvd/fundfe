@@ -4,6 +4,7 @@ import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import axios, { BASE_URL } from "../services/axios";
 import "../styles/petdetail.scss";
 import Carousel from "react-multi-carousel";
+
 import { toast } from "react-toastify";
 
 const PetDetail = () => {
@@ -15,6 +16,7 @@ const PetDetail = () => {
   const pet = location.state?.pet;
   console.log("Pet data:", pet); // Kiểm tra dữ liệu
   const roleID = localStorage.getItem("roleID");
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
   const handleAdopt = (pet) => {
     if (pet.petID) {
@@ -31,29 +33,31 @@ const PetDetail = () => {
       console.error("Pet ID is undefined");
     }
   };
-  const handleRemind = async ()=>{
-    try{
-    const response = await axios.post(`notification/remindReport`, {
-      "petID" : pet.petID
+  const handleRemind = async () => {
+    try {
+      const response = await axios.post(`notification/remindReport`, {
+        petID: pet.petID,
       });
       toast.success(response.data.message);
-    }catch(error){
+    } catch (error) {
       toast.error(error.response.data.message);
       console.log(error);
     }
-  }
-  const handleBanRequest = async ()=>{
-    try{
-      const response = await axios.post(`notification/banRequest/${localStorage.getItem("accountID")}`,{
-      "petID": pet.petID
-    });
-      toast.success(response.data.message)
-    }catch(error){
-      toast.error(error.response.data.message)
-      console.log(error)
+  };
+  const handleBanRequest = async () => {
+    try {
+      const response = await axios.post(
+        `notification/banRequest/${localStorage.getItem("accountID")}`,
+        {
+          petID: pet.petID,
+        }
+      );
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
+      console.log(error);
     }
-
-  }
+  };
 
   const responsive = {
     superLargeDesktop: {
@@ -86,7 +90,7 @@ const PetDetail = () => {
   useEffect(() => {
     fetchOtherPets();
   }, []);
-  
+
   const videoSrc = `data:video/webm;base64,${pet.video_report}`;
 
   const handleUpdatePet = () => {
@@ -134,102 +138,28 @@ const PetDetail = () => {
             <p>
               <strong>Weight:</strong> {pet.weight}kg
             </p>
-            <p>
-              <strong>Vaccinated:</strong>{" "}
-              {pet.vaccinated ? (
-                <i
-                  class="fa-solid fa-circle-check"
-                  style={{ color: "#2fe44d" }}
-                ></i>
-              ) : (
-                <i
-                  class="fa-solid fa-circle-xmark"
-                  style={{ color: "#d94545" }}
-                ></i>
-              )}
-            </p>
-            <p>
-              <strong>Spayed:</strong>{" "}
-              {pet.spayed ? (
-                <i
-                  class="fa-solid fa-circle-check"
-                  style={{ color: "#2fe44d" }}
-                ></i>
-              ) : (
-                <i
-                  class="fa-solid fa-circle-xmark"
-                  style={{ color: "#d94545" }}
-                ></i>
-              )}
-            </p>
-            <p>
-              <strong>Potty Trained: </strong>{" "}
-              {pet.potty_trained ? (
-                <i
-                  class="fa-solid fa-circle-check"
-                  style={{ color: "#2fe44d" }}
-                ></i>
-              ) : (
-                <i
-                  class="fa-solid fa-circle-xmark"
-                  style={{ color: "#d94545" }}
-                ></i>
-              )}
-            </p>
-            <p>
-              <strong>Dietary Requirements: </strong>
-              {pet.dietary_requirements ? (
-                <i
-                  class="fa-solid fa-circle-check"
-                  style={{ color: "#2fe44d" }}
-                ></i>
-              ) : (
-                <i
-                  class="fa-solid fa-circle-xmark"
-                  style={{ color: "#d94545" }}
-                ></i>
-              )}
-            </p>
-            <p>
-              <strong>Friendly: </strong>
-              {pet.socialized ? (
-                <i
-                  class="fa-solid fa-circle-check"
-                  style={{ color: "#2fe44d" }}
-                ></i>
-              ) : (
-                <i
-                  class="fa-solid fa-circle-xmark"
-                  style={{ color: "#d94545" }}
-                ></i>
-              )}
-            </p>
-            <p>
-              <strong>Rabies Vaccinated: </strong>
-              {pet.rabies_vaccinated ? (
-                <i
-                  class="fa-solid fa-circle-check"
-                  style={{ color: "#2fe44d" }}
-                ></i>
-              ) : (
-                <i
-                  class="fa-solid fa-circle-xmark"
-                  style={{ color: "#d94545" }}
-                ></i>
-              )}
-            </p>
+            {/*Thông tin*/}
+            {!isLoggedIn && (
+              <div className="adopt-button">
+                <NavLink to="/login">
+                  <Button>Adopt</Button>
+                </NavLink>
+              </div>
+            )}
             {roleID === "3" && (
               <div className="adopt-button">
                 <Button onClick={() => handleAdopt(pet)}>Adopt</Button>
               </div>
             )}
-            {roleID === "3"&& pet.status.toLowerCase() === "unavailable" && pet.accountID&& (
-              <div>
-                <div className="adopt-button">
-                  <Button onClick={() => handleReport(pet)}>Report</Button>
+            {roleID === "3" &&
+              pet.status.toLowerCase() === "unavailable" &&
+              pet.accountID && (
+                <div>
+                  <div className="adopt-button">
+                    <Button onClick={() => handleReport(pet)}>Report</Button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
           {roleID === "2" && (
             <div class="edit-button">
@@ -241,8 +171,104 @@ const PetDetail = () => {
               <Button onClick={handleRemind}>Remind</Button>
               <Button onClick={handleBanRequest}>Request Ban</Button>
             </div>
-            
           )}
+        </div>
+
+        <div className="pet-status">
+          <div className="column">
+            <h2 className="infor-title">Informations</h2>
+            <hr class="small-divider left mb-2"></hr>
+            <div className="row">
+              <div className="col">
+                <p>
+                  <strong>Vaccinated: </strong>{" "}
+                  {pet.vaccinated ? (
+                    <i
+                      className="fa-solid fa-circle-check"
+                      style={{ color: "#2fe44d" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa-solid fa-circle-xmark"
+                      style={{ color: "#d94545" }}
+                    ></i>
+                  )}
+                </p>
+                <p>
+                  <strong>Spayed: </strong>
+                  {pet.spayed ? (
+                    <i
+                      className="fa-solid fa-circle-check"
+                      style={{ color: "#2fe44d" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa-solid fa-circle-xmark"
+                      style={{ color: "#d94545" }}
+                    ></i>
+                  )}
+                </p>
+                <p>
+                  <strong>Socialized: </strong>
+                  {pet.socialized ? (
+                    <i
+                      className="fa-solid fa-circle-check"
+                      style={{ color: "#2fe44d" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa-solid fa-circle-xmark"
+                      style={{ color: "#d94545" }}
+                    ></i>
+                  )}
+                </p>
+              </div>
+              <div className="col">
+                <p>
+                  <strong>Potty Trained: </strong>
+                  {pet.potty_trained ? (
+                    <i
+                      className="fa-solid fa-circle-check"
+                      style={{ color: "#2fe44d" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa-solid fa-circle-xmark"
+                      style={{ color: "#d94545" }}
+                    ></i>
+                  )}
+                </p>
+                <p>
+                  <strong>Rabies Vaccinated: </strong>
+                  {pet.rabies_vaccinated ? (
+                    <i
+                      className="fa-solid fa-circle-check"
+                      style={{ color: "#2fe44d" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa-solid fa-circle-xmark"
+                      style={{ color: "#d94545" }}
+                    ></i>
+                  )}
+                </p>
+                <p>
+                  <strong>Dietary Requirements: </strong>
+                  {pet.dietary_requirements ? (
+                    <i
+                      className="fa-solid fa-circle-check"
+                      style={{ color: "#2fe44d" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa-solid fa-circle-xmark"
+                      style={{ color: "#d94545" }}
+                    ></i>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
         {pet.status.toLowerCase() === "unavailable" && pet.accountID && (
           <div className="pet-video">
@@ -264,23 +290,28 @@ const PetDetail = () => {
         )}
       </div>
       {roleID === "3" && (
-        <div className="support-banner">
-          <div className="container">
-            <div className="row align-items-center">
-              <div className="col">
-                <h2 className="support-text">Have you already supported us?</h2>
-              </div>
-              <div className="col-auto">
-                <NavLink to="/donate" className="nav-link">
-                  <button className="support-button">DONATE NOW</button>
-                </NavLink>
+        <section class="container-fluid support-banner-bg bg-fixed overlay">
+          <div className="support-banner">
+            <div className="container">
+              <div className="row align-items-center">
+                <div className="col">
+                  <h2 className="support-text">
+                    Have you already supported us?
+                  </h2>
+                </div>
+                <div className="col-auto">
+                  <NavLink to="/donate" className="nav-link">
+                    <button className="support-button">DONATE NOW</button>
+                  </NavLink>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       )}
+
       <section className="pets">
-        <h2>Các bé khác</h2> {/* Tiêu đề cho danh sách thú cưng khác */}
+        <h2>Other Pets</h2> {/* Tiêu đề cho danh sách thú cưng khác */}
         <Carousel
           responsive={responsive}
           infinite={true}
@@ -301,6 +332,25 @@ const PetDetail = () => {
         <NavLink to="/petlist" className="nav-link">
           <button className="adopt-button">ADOPT</button>
         </NavLink>
+      </section>
+
+      <section class="container-fluid contact-bg overlay">
+        <div className="support-banner">
+          <div className="container">
+            <div className="row align-items-center">
+              <div className="col">
+                <h2 className="support-text">
+                  You can contact us for more details!
+                </h2>
+              </div>
+              <div className="col-auto">
+                <NavLink to="/contact" className="nav-link">
+                  <button className="support-button">CONTACT</button>
+                </NavLink>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   );

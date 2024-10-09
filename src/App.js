@@ -16,7 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./Routes/ProtectRoute";
 import Admin from "./Account/Admin";
 import Staff from "./Account/Staff";
-import AppoimentTable from "./Appoinment/AppoimentTable";
+import AppoimentTable from "./Appointment/AppoimentTable";
 import PetDetail from "./Pet_Page/PetDetail";
 import AdoptProcess from "./Adoption/AdoptProcess";
 import PetsList from "./Pet_Page/PetList";
@@ -25,6 +25,7 @@ import AddPet from "./Pet_Page/AddPet";
 import AddPetNotifications from "./Notifications/AddPetNotifications";
 import RequestRegisterNotifications from "./Notifications/RequestRegisterNotifications";
 import Report from "./Report/Report";
+import BanRequestNotifications from "./Notifications/BanRequestNotifications";
 
 function App() {
   const roleID = localStorage.getItem("roleID")
@@ -45,8 +46,7 @@ function App() {
               <Route path="/PetUpdate/:petID" element={<PetUpdate />} />
               <Route path="/Contact" element={<Contact />} />
               <Route path="/petlist" element={<PetsList />} />
-              
-              <Route path="/report/:petID" element={<Report />} />
+
               <Route path="/petdetail/:petID" element={<PetDetail />} />
               <Route path="/adoptprocess/:petID" element={<AdoptProcess />} />
 
@@ -103,8 +103,6 @@ function App() {
                 }
               />
 
-           
-
               <Route
                 path="/admin-notifications/add-pet"
                 element={
@@ -122,6 +120,17 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+
+              <Route
+                path="/admin-notifications/ban-request"
+                element={
+                  <ProtectedRoute roleID={1}>
+                    <BanRequestNotifications />
+                  </ProtectedRoute>
+                }
+              />
+
 
             </Routes>
           </Container>

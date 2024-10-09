@@ -15,27 +15,21 @@ const RequestRegisterNotifications = () => {
         setError(null);
         try {
             const response = await axios.get("/notification/showRegisNoti");
-            console.log("API Response:", response.data); // Log the response
-
-            // Check if response.data is an object with a 'data' property
-            const notificationData = response.data.data || response.data;
-
-            // Ensure notificationData is an array
-            const processedNotifications = Array.isArray(notificationData) 
-                ? notificationData.map(noti => ({
-                    ...noti,
-                    isNew: !localStorage.getItem(`noti_${noti.notiID}_read`)
-                  }))
-                : [];
-
+            const processedNotifications = response.data.data.map(noti => ({
+                ...noti,
+                isNew: !localStorage.getItem(`noti_${noti.notiID}_read`)
+              }));
             const newCount = processedNotifications.filter(noti => noti.isNew).length;
             setNewNotificationsCount(newCount);
-
             setNotifications(processedNotifications);
         } catch (error) {
-            console.error('Error fetching notifications:', error.response || error);
-            setError('An error occurred. Please try again later.');
-            setNotifications([]);
+            if (error.response && error.response.status === 404) {
+                console.log('No register request notifications found');
+                setNotifications([]);
+            } else {
+                console.error('Error fetching notifications:', error);
+                setError('An error occurred. Please try again later.');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -100,7 +94,7 @@ const RequestRegisterNotifications = () => {
                         ))}
                     </ul>
                 ) : (
-                    <p>No notifications found</p>
+                    <p>No register request notifications found</p>
                 )}
             </div>            
         </div>

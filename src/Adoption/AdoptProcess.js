@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import "../styles/adoptprocess.scss";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import axios from "../services/axios";
 
 const AdoptionProcess = () => {
@@ -26,6 +28,10 @@ const AdoptionProcess = () => {
   const accountID = localStorage.getItem("accountID"); // Lấy accountID
   // Xử lý khi người dùng nhấn nút "Đặt lịch hẹn"
   const handleSubmit = async () => {
+    if (!appointment.date || !appointment.time) {
+      toast.error("Please enter date and time.");
+      return;
+    }
     try {
       const response = await axios.post(`appointment/adopt`, {
         date_time,
@@ -38,20 +44,16 @@ const AdoptionProcess = () => {
         setShowModal(false);
         setShowThankYou(true);
       }
-      if (date_time === null) {
-        console.log("alo");
-        alert("Vui long nhap date va time");
-      }
     } catch (error) {
+      toast.error(error.response.data.message);
       if (error.response && error.response.status === 409) {
         console.error("Conflict error:", error.response.data);
       }
       console.error("Lỗi khi gửi dữ liệu:", error);
-      alert(ErrorMessage);
+      toast.error(ErrorMessage);
     }
   };
 
-  console.log(ErrorMessage);
   useEffect(() => {
     const today = new Date();
     const min = new Date(today.setDate(today.getDate() + 4)) // Lấy ngày hiện tại cộng thêm 4 ngày
@@ -63,6 +65,7 @@ const AdoptionProcess = () => {
     setMinDate(min);
     setMaxDate(max);
   }, []);
+
   // Xử lý khi người dùng tick vào ô "Đồng ý với chính sách"
   const handleAgreeChange = (event) => {
     setAgreed(event.target.checked);
@@ -73,7 +76,7 @@ const AdoptionProcess = () => {
     if (agreed) {
       setShowModal(true);
     } else {
-      alert("Vui lòng đồng ý với chính sách trước khi tiếp tục.");
+      toast.error("Please agree to the policy before continuing.");
     }
   };
   useEffect(() => {
@@ -82,15 +85,27 @@ const AdoptionProcess = () => {
 
   const handleAppointmentChange = (event) => {
     const { name, value } = event.target;
+    if (name === "date") {
+      // Kiểm tra xem ngày nhập vào có nằm trong khoảng minDate và maxDate không
+      if (
+        new Date(value) < new Date(minDate) ||
+        new Date(value) > new Date(maxDate)
+      ) {
+        toast.error(`Please select a date from ${minDate} to ${maxDate}.`);
+        return; // Ngăn không cho cập nhật nếu ngày không hợp lệ
+      }
+    }
+
     if (name === "time") {
       const selectedTime = new Date(`1970-01-01T${value}:00`);
       const startTime = new Date(`1970-01-01T08:00:00`);
       const endTime = new Date(`1970-01-01T17:00:00`);
       if (selectedTime < startTime || selectedTime > endTime) {
-        alert("Vui lòng chọn thời gian từ 8:00 đến 17:00.");
+        toast.error("Please choose a time from 8:00 to 17:00.");
         return; // Ngăn không cho cập nhật nếu thời gian không hợp lệ
       }
     }
+
     setAppointment((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -105,44 +120,37 @@ const AdoptionProcess = () => {
       {/*Quy trình nhận nuôi */}
       <div className="adoption-process-content">
         <h1 className="adoption-title">Adoption Process</h1>
+        <hr class="small-divider center mb-2"></hr>
+
         <p className="adoption-intro">
           Before deciding to adopt a dog or cat, please ask yourself if you are
           ready to take full responsibility for them, including financial,
           accommodation, and emotional commitment. Adoption requires a strong
           agreement from yourself, your family, and those involved. Please
-          consider carefully before contacting HPA for adoption.
+          consider carefully before contacting FurryFriendFund for adoption.
         </p>
         <h3>Ready to go? Follow these steps:</h3>
         <ul className="adoption-steps-list">
           <li>
-            <span role="img" aria-label="step1">
-              1️⃣
-            </span>
-            Learn about the pet you want to adopt on HPA's website.
+            <i class="fa-solid fa-1">.</i>
+            Learn about the pet you want to adopt on FFF's website.
           </li>
+
           <li>
-            <span role="img" aria-label="step2">
-              2️⃣
-            </span>
+            <i class="fa-solid fa-2">.</i>
             Contact the volunteer in charge of the pet to get more information.
           </li>
           <li>
-            <span role="img" aria-label="step3">
-              3️⃣
-            </span>
+            <i class="fa-solid fa-3">.</i>
             Join the adoption interview.
           </li>
           <li>
-            <span role="img" aria-label="step4">
-              4️⃣
-            </span>
+            <i class="fa-solid fa-4">.</i>
             Prepare the necessary facilities, sign the adoption papers, and pay
             the medical fee.
           </li>
           <li>
-            <span role="img" aria-label="step5">
-              5️⃣
-            </span>{" "}
+            <i class="fa-solid fa-5">.</i>
             Regularly update us on the pet’s situation, especially when there
             are any issues, to receive timely advice.
           </li>
