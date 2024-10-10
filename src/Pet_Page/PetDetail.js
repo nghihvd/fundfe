@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { useLocation, useNavigate, NavLink } from "react-router-dom";
+import { useLocation, useNavigate, NavLink, useParams } from "react-router-dom";
 import axios, { BASE_URL } from "../services/axios";
 import "../styles/petdetail.scss";
 import Carousel from "react-multi-carousel";
-
 import { toast } from "react-toastify";
+import Spinner from "../components/Spinner";
 
 const PetDetail = () => {
-  // Giả sử bạn có một hàm để lấy thông tin thú cưng theo petID
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const [otherPets, setOtherPets] = useState([]); // Khởi tạo là mảng rỗng
-  //const [videoSrc, setVideoSrc] = useState(null); // State để lưu URL video
-  const location = useLocation(); // Lấy location
-  const pet = location.state?.pet;
-  console.log("Pet data:", pet); // Kiểm tra dữ liệu
+  const [otherPets, setOtherPets] = useState([]);
+  const location = useLocation();
+  const [pet, setPet] = useState(location.state?.pet);
   const roleID = localStorage.getItem("roleID");
   const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const { petID } = useParams(); // Lấy petID từ URL
 
   const handleAdopt = (pet) => {
     if (pet.petID) {
@@ -77,25 +76,56 @@ const PetDetail = () => {
       items: 1, // Số lượng item hiển thị trên màn hình mobile
     },
   };
+
   // Hàm để lấy dữ liệu thú cưng khác
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        if (!pet) {
+          // Nếu pet không có trong state, lấy từ API dựa vào ID trong URL
+          const petId = location.pathname.split("/").pop();
+          const response = await axios.get(`/pets/getByID`);
+          setPet(response.data);
+        }
+        console.log("Fetching other pets..."); // Kiểm tra việc gọi fetchOtherPets
+        await fetchOtherPets();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [petID]);
+
   const fetchOtherPets = async () => {
     try {
       const response = await axios.get("/pets/showListOfPets");
-      setOtherPets(response.data);
+      console.log("Fetched other pets:", response.data); // Kiểm tra dữ liệu otherPets
+      setOtherPets(response.data); // Cập nhật danh sách otherPets vào state
+      console.log("Updated other pets state:", response.data); // Kiểm tra state sau khi cập nhật
     } catch (error) {
       console.error("Error fetching other pets:", error);
     }
   };
 
-  useEffect(() => {
-    fetchOtherPets();
-  }, []);
+  if (isLoading) {
+    return <Spinner />;
+  }
 
-  const videoSrc = `data:video/webm;base64,${pet.video_report}`;
+  if (!pet) {
+    return <div>Pet not found</div>;
+  }
+
+  const videoSrc = pet.video_report
+    ? `data:video/webm;base64,${pet.video_report}`
+    : null;
 
   const handleUpdatePet = () => {
     if (pet.petID) {
-      navigate(`/petupdate/${pet.petID}`); // Chuyển hướng đến trang cập nhật
+      navigate(`/petupdate/${pet.petID}`);
     } else {
       console.error("Pet ID is undefined");
     }
@@ -108,8 +138,9 @@ const PetDetail = () => {
     return imgUrl;
   };
 
+  // Xử lý trường hợp không có pet
   if (!pet) {
-    return <div>Pet not found</div>; // Xử lý trường hợp không có pet
+    return <div>Pet not found</div>;
   }
 
   return (
@@ -122,23 +153,26 @@ const PetDetail = () => {
         </div>
         <div class="col-sm-6 col-md-6 col-lg-6 caption-adoption float-right">
           <div className="pet-info">
-            <h1>{pet.name}</h1> {/* Hiển thị tên thú cưng */}
+            <h1>{pet.name}</h1>
             <p>
-              <strong>Breed:</strong> {pet.breed}
+              <strong>Breed: </strong> {pet.breed}
             </p>
             <p>
-              <strong>Age:</strong> {pet.age}
+              <strong>Age: </strong> {pet.age} month
             </p>
             <p>
-              <strong>Sex:</strong> {pet.sex}
+              <strong>Sex: </strong> {pet.sex}
             </p>
             <p>
-              <strong>Size:</strong> {pet.size}
+              <strong>Size: </strong> {pet.size}
             </p>
             <p>
-              <strong>Weight:</strong> {pet.weight}kg
+              <strong>Weight: </strong> {pet.weight}kg
             </p>
-            {/*Thông tin*/}
+            <p>
+              <strong>Description: </strong>
+              {pet.description ? pet.description : "Not yet"}
+            </p>
             {!isLoggedIn && (
               <div className="adopt-button">
                 <NavLink to="/login">
@@ -270,9 +304,10 @@ const PetDetail = () => {
             </div>
           </div>
         </div>
+
         {pet.status.toLowerCase() === "unavailable" && pet.accountID && (
           <div className="pet-video">
-            {pet.video_report ? (
+            {videoSrc ? (
               <div>
                 <h2>
                   Video report of {pet.name} at {pet.date_time_report}
@@ -289,69 +324,78 @@ const PetDetail = () => {
           </div>
         )}
       </div>
+
+      {/*Donate banner */}
       {roleID === "3" && (
-        <section class="container-fluid support-banner-bg bg-fixed overlay">
-          <div className="support-banner">
-            <div className="container">
-              <div className="row align-items-center">
-                <div className="col">
-                  <h2 className="support-text">
-                    Have you already supported us?
-                  </h2>
+        <>
+          <div className="support-banner-wrapper">
+            <section className="support-banner-bg bg-fixed overlay">
+              <div className="support-banner">
+                <div className="container">
+                  <div className="row align-items-center">
+                    <div className="col">
+                      <h2 className="support-text">
+                        Have you already supported us?
+                      </h2>
+                    </div>
+                    <div className="col-auto">
+                      <NavLink to="/donate" className="nav-link">
+                        <button className="support-button">DONATE NOW</button>
+                      </NavLink>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-auto">
-                  <NavLink to="/donate" className="nav-link">
-                    <button className="support-button">DONATE NOW</button>
+              </div>
+            </section>
+          </div>
+
+          <section className="pets">
+            <h2>Other Pets</h2>
+            <Carousel
+              responsive={responsive}
+              infinite={true}
+              removeArrowOnDeviceType={["tablet", "mobile"]}
+            >
+              {otherPets.map((otherPet, index) => (
+                <div key={index} className="pet-card">
+                  <NavLink
+                    to={`/petdetail/${otherPet.petID}`}
+                    className="nav-link"
+                  >
+                    <img src={otherPet.img_url} alt={otherPet.name} />
+                    <h3>{otherPet.name}</h3>
+                    <p>Sex: {otherPet.sex}</p>
+                    <p>Age: {otherPet.age}</p>
+                    <p>Vaccinated: {otherPet.vaccinated ? "Yes" : "No"}</p>
                   </NavLink>
                 </div>
+              ))}
+            </Carousel>
+            <NavLink to="/petlist" className="nav-link">
+              <button className="adopt-button">ADOPT</button>
+            </NavLink>
+          </section>
+
+          <section className="container-fluid contact-bg overlay">
+            <div className="support-banner">
+              <div className="container">
+                <div className="row align-items-center">
+                  <div className="col">
+                    <h2 className="support-text">
+                      You can contact us for more details!
+                    </h2>
+                  </div>
+                  <div className="col-auto">
+                    <NavLink to="/contact" className="nav-link">
+                      <button className="support-button">CONTACT</button>
+                    </NavLink>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </>
       )}
-
-      <section className="pets">
-        <h2>Other Pets</h2> {/* Tiêu đề cho danh sách thú cưng khác */}
-        <Carousel
-          responsive={responsive}
-          infinite={true}
-          removeArrowOnDeviceType={["tablet", "mobile"]}
-        >
-          {otherPets.map((otherPet, index) => (
-            <div key={index} className="pet-card">
-              <NavLink to={`/petdetail/${otherPet.petID}`} className="nav-link">
-                <img src={otherPet.img_url} alt={otherPet.name} />
-                <h3>{otherPet.name}</h3>
-                <p>Sex: {otherPet.sex}</p>
-                <p>Age: {otherPet.age}</p>
-                <p>Vaccinated: {otherPet.vaccinated ? "Yes" : "No"}</p>
-              </NavLink>
-            </div>
-          ))}
-        </Carousel>
-        <NavLink to="/petlist" className="nav-link">
-          <button className="adopt-button">ADOPT</button>
-        </NavLink>
-      </section>
-
-      <section class="container-fluid contact-bg overlay">
-        <div className="support-banner">
-          <div className="container">
-            <div className="row align-items-center">
-              <div className="col">
-                <h2 className="support-text">
-                  You can contact us for more details!
-                </h2>
-              </div>
-              <div className="col-auto">
-                <NavLink to="/contact" className="nav-link">
-                  <button className="support-button">CONTACT</button>
-                </NavLink>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };

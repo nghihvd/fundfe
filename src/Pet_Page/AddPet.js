@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../services/axios";
 import "../styles/addpet.scss";
+import Spinner from "../components/Spinner";
 
 const AddPet = ({ onPetAdded = () => {} }) => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [petData, setPetData] = useState({
     name: "",
@@ -60,6 +62,7 @@ const AddPet = ({ onPetAdded = () => {} }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData();
     for (const key in petData) {
       formData.append(key, petData[key]);
@@ -80,6 +83,8 @@ const AddPet = ({ onPetAdded = () => {} }) => {
         error.response ? error.response.data : error.message
       );
       alert("Failed to add pet. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -90,6 +95,10 @@ const AddPet = ({ onPetAdded = () => {} }) => {
       categoryID: value ? parseInt(value, 10) : 0,
     }));
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="container pets-container">
@@ -152,6 +161,7 @@ const AddPet = ({ onPetAdded = () => {} }) => {
               value={petData.age}
               onChange={handleChange}
               required
+              min="0"
             />
             <input
               type="number"
@@ -161,6 +171,7 @@ const AddPet = ({ onPetAdded = () => {} }) => {
               name="weight"
               value={petData.weight}
               onChange={handleChange}
+              min="0"
             />
             <input
               type="text"
@@ -261,6 +272,16 @@ const AddPet = ({ onPetAdded = () => {} }) => {
                   onChange={handleChange}
                 />
                 <label className="form-check-label">Rabies Vaccinated</label>
+              </div>
+              <div className="form-check mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="dietary_requirements"
+                  checked={petData.dietary_requirements}
+                  onChange={handleChange}
+                />
+                <label className="form-check-label">Dietary Requirements</label>
               </div>
             </div>
             <button className="create-button w-50" type="submit">

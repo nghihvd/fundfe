@@ -1,15 +1,31 @@
+import React, { useState, useEffect } from "react";
 import "../styles/login.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useNavigate, NavLink } from "react-router-dom";
 import api from "../services/axios";
+import Spinner from "../components/Spinner";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const roleID = localStorage.getItem("roleID");
+    if (isLoggedIn) {
+      if (roleID === "2") {
+        navigate("/appoinment");
+      } else if (roleID === "3") {
+        navigate("/");
+      } else if (roleID === "1") {
+        navigate("/admin");
+      }
+    }
+  }, [navigate]);
 
   // Handle login action
   const handleLogin = async (event) => {
@@ -19,6 +35,7 @@ const Login = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
       const response = await api.post("accounts/login", {
         accountID: username,
@@ -47,26 +64,18 @@ const Login = () => {
       }
     } catch (error) {
       toast.error("Invalid username or password");
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    const roleID = localStorage.getItem("roleID");
-    if (isLoggedIn) {
-      if (roleID === "2") {
-        navigate("/appoinment");
-      } else if (roleID === "3") {
-        navigate("/");
-      } else if (roleID === "1") {
-        navigate("/admin");
-      }
-    }
-  }, [navigate]);
 
   const handleGoBack = () => {
     navigate("/");
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="login-container col-12 col-sm-4">

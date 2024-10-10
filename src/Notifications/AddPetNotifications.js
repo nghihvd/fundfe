@@ -3,6 +3,7 @@ import axios from "../services/axios";
 import "../styles/adminpage.scss";
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import Spinner from "../components/Spinner";
 
 const AddPetNotifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -15,21 +16,25 @@ const AddPetNotifications = () => {
         setError(null);
         try {
             const response = await axios.get("/notification/showAdminAdoptNoti");
-            const processedNotifications = response.data.map(noti => ({
-                ...noti,
-                isNew: !localStorage.getItem(`noti_${noti.notiID}_read`)
-            }));
-            const newCount = processedNotifications.filter(noti => noti.isNew).length;
-            setNewNotificationsCount(newCount);
-            setNotifications(processedNotifications);
-        } catch (error) {
-            if (error.response && error.response.status === 404) {  
-                console.log('No add pet notifications found');
-                setNotifications([]);
+            if (response.data && Array.isArray(response.data)) {
+                const processedNotifications = response.data.map(noti => ({
+                    ...noti,
+                    isNew: !localStorage.getItem(`noti_${noti.notiID}_read`)
+                }));
+                const newCount = processedNotifications.filter(noti => noti.isNew).length;
+                setNewNotificationsCount(newCount);
+                setNotifications(processedNotifications);
             } else {
-                console.error('Error fetching notifications:', error)
+                setNotifications([]);
+            }
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+            if (error.response && error.response.status === 400) {
+                setError(error.response.data || 'No adopt notifications found');
+            } else {
                 setError('An error occurred. Please try again later.');
             }
+            setNotifications([]);
         } finally {
             setIsLoading(false);
         }
@@ -37,8 +42,6 @@ const AddPetNotifications = () => {
 
     useEffect(() => {
         apiAddPetNotifications();
-
-        
     }, [apiAddPetNotifications]);
 
     const HandleStatusUpdate = async (notiID, status) => {
@@ -70,19 +73,39 @@ const AddPetNotifications = () => {
         }
     };
 
+    const formatMessage = (message) => {
+        const lines = message.split('\n');
+        const columnLength = Math.ceil(lines.length / 3);
+        return (
+            <div className="notification-message-container">
+                <div className="notification-message-column">
+                    {lines.slice(0, columnLength).join('\n')}
+                </div>
+                <div className="notification-message-column">
+                    {lines.slice(columnLength, 2 * columnLength).join('\n')}
+                </div>
+                <div className="notification-message-column">
+                    {lines.slice(2 * columnLength).join('\n')}
+                </div>
+            </div>
+        );
+    };
+
+    if (isLoading) {
+        return <Spinner />;
+    }
+
     return (
         <div className="admin-notifications">
             <div className="notifications-content">
                 <h2>Add Pet Notifications {newNotificationsCount > 0 && <span className="notification-count">({newNotificationsCount})</span>}</h2>
-                {isLoading ? (
-                    <p>Loading...</p>
-                ) : error ? (
+                {error ? (
                     <p className="error-message">{error}</p>
                 ) : notifications.length > 0 ? (
                     <ul className="notification-list">
                         {notifications.map((noti) => (
                             <li key={noti.notiID} className={`notification-item ${noti.isNew ? 'new' : ''}`}>
-                                <p>{noti.message}</p>
+                                {formatMessage(noti.message)}
                                 <p className="notification-date">
                                     {formatRelativeTime(noti.createdAt)}
                                 </p>
@@ -96,7 +119,7 @@ const AddPetNotifications = () => {
                         ))}
                     </ul>
                 ) : (
-                    <p>No notifications found</p>
+                    <p>No adopt notifications found</p>
                 )}
             </div>            
         </div>

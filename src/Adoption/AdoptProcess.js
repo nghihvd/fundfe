@@ -32,6 +32,7 @@ const AdoptionProcess = () => {
       toast.error("Please enter date and time.");
       return;
     }
+
     try {
       const response = await axios.post(`appointment/adopt`, {
         date_time,
@@ -50,7 +51,6 @@ const AdoptionProcess = () => {
         console.error("Conflict error:", error.response.data);
       }
       console.error("Lỗi khi gửi dữ liệu:", error);
-      toast.error(ErrorMessage);
     }
   };
 
@@ -151,8 +151,9 @@ const AdoptionProcess = () => {
           </li>
           <li>
             <i class="fa-solid fa-5">.</i>
-            Regularly update us on the pet’s situation, especially when there
-            are any issues, to receive timely advice.
+            You need to regularly update your pet's status every two weeks. If
+            the deadline is exceeded and reminders have been sent multiple
+            times, your account will be banned, and you will be penalized.
           </li>
         </ul>
         <div className="adoption-policy">

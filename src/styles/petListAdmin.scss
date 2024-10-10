@@ -32,3 +32,19 @@
     }
   }
 }
+
+.pet-item {
+  // ... (các styles hiện tại)
+
+  .pet-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+
+    h3 {
+      margin: 0;
+      margin-left: 5px;
+    }
+  }
+}

@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios, { BASE_URL } from "../services/axios";
 import "../styles/petslist.scss";
 import { FaFilter } from "react-icons/fa";
+import StatusDot from "../components/StatusDot";
+import Spinner from "../components/Spinner";
 
 const PetsList = () => {
   const [pets, setPets] = useState([]);
@@ -18,20 +20,28 @@ const PetsList = () => {
   const [ageError, setAgeError] = useState("");
   const [noResults, setNoResults] = useState(false);
   const roleID = localStorage.getItem("roleID");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     apiListPets();
-  }, [roleID]);
+  }, []);
 
   const apiListPets = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get("/pets/showListOfPets");
-      setPets(response.data);
+      // Lọc chỉ lấy pet có status là 'Available' hoặc 'Waiting'
+      const filteredPets = response.data.filter(
+        (pet) => pet.status === "Available" || pet.status === "Waiting"
+      );
+      setPets(filteredPets);
     } catch (error) {
       console.error("Error Api pets:", error);
       if (error.code === "ERR_NETWORK") {
         console.error("Network error!");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -110,6 +120,10 @@ const PetsList = () => {
     apiListPets();
   };
 
+  if (isLoading) {
+    return <Spinner />;
+  }
+
   return (
     <div className="pets-list-container">
       <div className="filter-and-search">
@@ -180,7 +194,10 @@ const PetsList = () => {
               onClick={() => handlePetClick(pet)}
             >
               <img src={getImageUrl(pet.img_url)} alt={pet.name} />
-              <h3>{pet.name}</h3>
+              <div className="pet-info">
+                <h3>{pet.name}</h3>
+                <StatusDot status={pet.status} />
+              </div>
               <div className="pet-info-divider"></div>
               <p>Age: {pet.age} month</p>
               <p>Sex: {pet.sex}</p>

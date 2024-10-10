@@ -24,7 +24,7 @@
         background-color: #f1cf7e;
         color: #333;
         font-size: 16px;
-       border-radius: 25px;
+        border-radius: 25px;
         margin-bottom: 10px;
         text-align: center;
         transition: background-color 0.3s ease;
@@ -122,6 +122,18 @@
         &.new {
           border-left: 4px solid #1890ff;
           background-color: #e6f7ff;
+        }
+
+        .notification-message-container {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 8px;
+        }
+
+        .notification-message-column {
+          width: 32%; // Để có khoảng cách giữa ba cột
+          white-space: pre-wrap;
+          word-wrap: break-word;
         }
       }
     }

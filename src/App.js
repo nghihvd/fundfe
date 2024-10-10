@@ -46,10 +46,8 @@ function App() {
               <Route path="/PetUpdate/:petID" element={<PetUpdate />} />
               <Route path="/Contact" element={<Contact />} />
               <Route path="/petlist" element={<PetsList />} />
-
               <Route path="/petdetail/:petID" element={<PetDetail />} />
               <Route path="/adoptprocess/:petID" element={<AdoptProcess />} />
-
               <Route
                 path="/admin"
                 element={
@@ -58,7 +56,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/adoptprocess/:petID"
                 element={
@@ -67,7 +64,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/staff"
                 element={
@@ -76,7 +72,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/appoinment"
                 element={
@@ -93,7 +88,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/petlistadmin"
                 element={
@@ -102,7 +96,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/admin-notifications/add-pet"
                 element={
@@ -111,7 +104,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/admin-notifications/request-register"
                 element={
@@ -120,8 +112,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
-
               <Route
                 path="/admin-notifications/ban-request"
                 element={
@@ -130,8 +120,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
-
             </Routes>
           </Container>
         </div>

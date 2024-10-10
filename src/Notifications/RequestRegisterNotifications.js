@@ -3,6 +3,7 @@ import axios from "../services/axios";
 import "../styles/adminpage.scss";
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import Spinner from "../components/Spinner";
 
 const RequestRegisterNotifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -15,21 +16,21 @@ const RequestRegisterNotifications = () => {
         setError(null);
         try {
             const response = await axios.get("/notification/showRegisNoti");
-            const processedNotifications = response.data.data.map(noti => ({
-                ...noti,
-                isNew: !localStorage.getItem(`noti_${noti.notiID}_read`)
-              }));
-            const newCount = processedNotifications.filter(noti => noti.isNew).length;
-            setNewNotificationsCount(newCount);
-            setNotifications(processedNotifications);
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
-                console.log('No register request notifications found');
-                setNotifications([]);
+            if (response.data && response.data.data) {
+                const processedNotifications = response.data.data.map(noti => ({
+                    ...noti,
+                    isNew: !localStorage.getItem(`noti_${noti.notiID}_read`)
+                }));
+                const newCount = processedNotifications.filter(noti => noti.isNew).length;
+                setNewNotificationsCount(newCount);
+                setNotifications(processedNotifications);
             } else {
-                console.error('Error fetching notifications:', error);
-                setError('An error occurred. Please try again later.');
+                setNotifications([]);
             }
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+            setError('An error occurred. Please try again later.');
+            setNotifications([]);
         } finally {
             setIsLoading(false);
         }
@@ -68,6 +69,10 @@ const RequestRegisterNotifications = () => {
         }
     };
 
+    if (isLoading) {
+        return <Spinner />;
+    }
+
     return (
         <div className="admin-notifications">
             <div className="notifications-content">
@@ -80,7 +85,7 @@ const RequestRegisterNotifications = () => {
                     <ul className="notification-list">
                         {notifications.map((noti) => (
                             <li key={noti.notiID} className={`notification-item ${noti.isNew ? 'new' : ''}`}>
-                                <p>{noti.message}</p>
+                                <div className="notification-message">{noti.message}</div>
                                 <p className="notification-date">
                                     {formatRelativeTime(noti.createdAt)}
                                 </p>

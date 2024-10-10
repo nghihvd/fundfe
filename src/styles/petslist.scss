@@ -138,6 +138,18 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       }
     }
+
+    .pet-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+
+      h3 {
+        margin: 0;
+        margin-left: 5px;
+      }
+    }
   }
 
   .pagination {

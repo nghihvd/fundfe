@@ -4,9 +4,12 @@ import axios, { BASE_URL } from "../services/axios";
 import "../styles/petListAdmin.scss";
 import { FaFilter } from "react-icons/fa";
 import AddPet from "./AddPet";
+import StatusDot from "../components/StatusDot";
+import Spinner from "../components/Spinner";
 
 const PetListAdmin = () => {
   const [pets, setPets] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [petsPerPage] = useState(8);
   const [searchParams, setSearchParams] = useState({
@@ -45,6 +48,7 @@ const PetListAdmin = () => {
   };
 
   const apiListAllPets = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get("/pets/showListAllOfPets");
       setPets(response.data);
@@ -55,8 +59,11 @@ const PetListAdmin = () => {
           "Network error. Please check if the backend server is running on port 8081."
         );
       }
+    } finally {
+      setIsLoading(false);
     }
   };
+
   useEffect(() => {
     apiListAllPets(); // Gọi hàm fetchPets khi component được mount
   }, []);
@@ -125,6 +132,10 @@ const PetListAdmin = () => {
   const currentPets = pets.slice(indexOfFirstPet, indexOfLastPet);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="pets-list-admin-container">
@@ -207,7 +218,10 @@ const PetListAdmin = () => {
               onClick={() => handlePetClick(pet)}
             >
               <img src={getImageUrl(pet.img_url)} alt={pet.name} />
-              <h3>{pet.name}</h3>
+              <div className="pet-info">
+                <h3>{pet.name}</h3>
+                <StatusDot status={pet.status} />
+              </div>
               <div className="pet-info-divider"></div>
               <p>Age: {pet.age} month</p>
               <p>Sex: {pet.sex}</p>

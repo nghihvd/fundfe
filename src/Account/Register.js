@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/register.scss";
 import { toast } from "react-toastify";
 import api from "../services/axios";
+import Spinner from "../components/Spinner";
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
@@ -17,6 +18,7 @@ const Register = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -54,18 +56,19 @@ const Register = () => {
     if (!validateForm()) {
       return;
     }
-    const userData = {
-      name: fullName,
-      birthdate: birthday,
-      sex,
-      address,
-      phone: phoneNumber,
-      accountID: username,
-      password,
-      roleID: role === "Staff" ? 2 : 3,
-    };
-
+    setIsLoading(true);
     try {
+      const userData = {
+        name: fullName,
+        birthdate: birthday,
+        sex,
+        address,
+        phone: phoneNumber,
+        accountID: username,
+        password,
+        roleID: role === "Staff" ? 2 : 3,
+      };
+
       const checkUsername = await api.get(`accounts/search/${username}`);
       if (checkUsername.data && checkUsername) {
         toast.error("Username already exists!");
@@ -82,10 +85,15 @@ const Register = () => {
       }
       navigate("/login");
     } catch (error) {
-      //console.error("Registration error:", error);
       toast.error("Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="register-container col-12 col-sm-6 mx-auto">

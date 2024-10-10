@@ -29,20 +29,22 @@
 .me-auto {
   margin: 0 auto;
   margin-top: 8px;
-  margin-left: 150px;
+  margin-left: 80px;
 
   h3 {
     font-size: 20px;
-    position: relative; // Để có thể sử dụng z-index
-    z-index: 1; // Đảm bảo văn bản nằm trên hình ảnh
-    transition: color 0.3s; // Hiệu ứng chuyển màu
+
+    z-index: 1;
+    transition: color 0.3s;
   }
 
   .nav-link {
-    position: relative; // Để có thể sử dụng z-index
-    z-index: 1; // Đảm bảo văn bản nằm trên hình ảnh
-    // display: inline-block; // Để có thể áp dụng padding và background
+    position: relative;
+
     margin: 10px 20px;
+    &:hover {
+      border-radius: 5px;
+    }
 
     &:active {
       background-color: rgb(149, 144, 141);

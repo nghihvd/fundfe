@@ -24,10 +24,9 @@ const Notification = ({ roleID }) => {
                 const processedNotifications = notificationData.map(noti => ({
                     ...noti,
                     isRead: localStorage.getItem(`noti_${noti.notiID}_read`) === 'true',
-                    createdAt: noti.createdAt || noti.created_at || new Date().toISOString() // Fallback to current date if no date is provided
+                    createdAt: noti.createdAt || noti.created_at || new Date().toISOString()
                 }));
                 
-                // Sắp xếp thông báo theo thời gian tạo, mới nhất lên đầu
                 processedNotifications.sort((a, b) => moment(b.createdAt).valueOf() - moment(a.createdAt).valueOf());
                 
                 setNotifications(processedNotifications);
